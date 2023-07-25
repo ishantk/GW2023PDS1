@@ -1,6 +1,8 @@
 import datetime
 
 """
+    Pet: pid, name, age, weight, breed, gender, cid, createdon
+
     create table Customer(
         cid int primary key auto_increment,
         name text,
@@ -11,33 +13,45 @@ import datetime
         address text,
         createdon datetime
     );
+    
+    create table Pet(
+        pid int primary key auto_increment,
+        name text,
+        age int,
+        weight int,
+        breed text,
+        gender text,
+        cid int,
+        createdon datetime,
+        FOREIGN KEY (cid) REFERENCES Customer(cid)
+    );
 """
 
-
-class Customer:
+class Pet:
 
     def __init__(self):
-        self.cid = 0
+        self.pid = 0
         self.name = ""
-        self.phone = ""
-        self.email = ""
         self.age = 0
+        self.weight = 0
+        self.breed = ""
         self.gender = ""
-        self.address = ""
+        self.cid = 0
         self.createdon = ""
 
-    def read_customer_data(self):
-        self.name = input("Enter Customer Name: ")
-        self.phone = input("Enter Customer Phone: ")
-        self.email = input("Enter Customer Email: ")
-        self.age = int(input("Enter Customer Age: "))
-        self.gender = input("Enter Customer Gender (male/female): ").lower()
-        self.address = input("Enter Customer Address: ")
+    def read_pet_data(self):
+        self.name = input("Enter Pet Name: ")
+        self.age = int(input("Enter Pet Age: "))
+        self.age = int(input("Enter Pet Weight: "))
+        self.breed = input("Enter Customer Address: ")
+        self.gender = input("Enter Pet Gender (male/female): ").lower()
+
         # Get the date and time
         self.createdon = str(datetime.datetime.today())
         # Eliminate Milli Seconds
         self.createdon = self.createdon[: self.createdon.rindex(".")]
 
+    """
     def get_insert_sql_query(self):
         sql = "insert into Customer values(null, '{name}', '{phone}', '{email}', {age}, " \
               "'{gender}', '{address}', '{createdon}');".format_map(vars(self))
@@ -58,5 +72,5 @@ class Customer:
         sql = "update Customer set name='{name}', phone='{phone}', email='{email}', age={age}, " \
               "gender='{gender}', address='{address}' where cid = {cid}".format_map(vars(self))
         return sql
-
+    """
 
