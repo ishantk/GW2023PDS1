@@ -27,6 +27,7 @@ import datetime
     );
 """
 
+
 class Pet:
 
     def __init__(self):
@@ -42,8 +43,8 @@ class Pet:
     def read_pet_data(self):
         self.name = input("Enter Pet Name: ")
         self.age = int(input("Enter Pet Age: "))
-        self.age = int(input("Enter Pet Weight: "))
-        self.breed = input("Enter Customer Address: ")
+        self.weight = int(input("Enter Pet Weight: "))
+        self.breed = input("Enter Pet Breed: ")
         self.gender = input("Enter Pet Gender (male/female): ").lower()
 
         # Get the date and time
@@ -51,23 +52,23 @@ class Pet:
         # Eliminate Milli Seconds
         self.createdon = self.createdon[: self.createdon.rindex(".")]
 
-    """
     def get_insert_sql_query(self):
-        sql = "insert into Customer values(null, '{name}', '{phone}', '{email}', {age}, " \
-              "'{gender}', '{address}', '{createdon}');".format_map(vars(self))
+        sql = "insert into Pet values(null, '{name}', {age}, {weight}," \
+              "'{breed}', '{gender}', {cid} , '{createdon}');".format_map(vars(self))
         return sql
 
-    def get_customers_sql_query(self, phone=""):
-        if len(phone) == 0:
-            sql = "select * from Customer"
+    def get_pets_sql_query(self, cid=""):
+        if len(cid) == 0:
+            sql = "select * from Pet"
         else:
-            sql = "select * from Customer where phone = '{}'".format(phone)
+            sql = "select * from Pet where cid = {}".format(cid)
         return sql
 
     def get_delete_sql_query(self):
-        sql = "delete from Customer where cid = {}".format(self.cid)
+        sql = "delete from Pet where pid = {}".format(self.pid)
         return sql
 
+    """
     def get_update_sql_query(self):
         sql = "update Customer set name='{name}', phone='{phone}', email='{email}', age={age}, " \
               "gender='{gender}', address='{address}' where cid = {cid}".format_map(vars(self))
