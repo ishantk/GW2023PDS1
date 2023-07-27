@@ -58,10 +58,12 @@ class Pet:
         return sql
 
     def get_pets_sql_query(self, cid=""):
-        if len(cid) == 0:
-            sql = "select * from Pet"
-        else:
+
+        sql = "select * from Pet"
+
+        if len(cid) != 0:
             sql = "select * from Pet where cid = {}".format(cid)
+
         return sql
 
     def get_delete_sql_query(self):

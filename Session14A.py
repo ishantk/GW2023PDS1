@@ -44,6 +44,7 @@ class Customer:
         return sql
 
     def get_customers_sql_query(self, phone=""):
+
         if len(phone) == 0:
             sql = "select * from Customer"
         else:
