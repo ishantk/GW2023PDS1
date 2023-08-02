@@ -13,15 +13,21 @@
 
   <nav class="navbar navbar-expand-sm bg-light">
       <div class="container-fluid">
+
         <ul class="navbar-nav">
+
           <li class="nav-item">
-            <a class="nav-link" href="#">Manage Customers</a>
+            <a class="nav-link" href="/home">Manage Customers</a>
           </li>
+
           <li class="nav-item">
             <a class="nav-link" href="#">Manage Pets</a>
           </li>
            <li class="nav-item">
             <a class="nav-link" href="#">Manage Consultations</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/logout">Logout</a>
           </li>
         </ul>
       </div>
@@ -29,12 +35,13 @@
 
   <div class="mt-4 p-5 bg-primary text-white rounded">
     <h1>Vets App</h1>
-    <p>Welcome to Vets App</p>
+    <p>Dear, {{name}} <br> Welcome to Vets App <br> {{email}}</p>
+
   </div>
 
   <br>
   <h2>Add Customer</h2>
-  <form action="" method="post">
+  <form action="/add-customer" method="post">
 
     <div class="mb-3 mt-3">
       <label for="name">Name:</label>
@@ -58,12 +65,12 @@
 
     <label >Gender:</label>
     <div class="form-check">
-      <input type="radio" class="form-check-input" id="radio1" name="optradio" value="male" checked>Male
+      <input type="radio" class="form-check-input" id="radio1" name="gender" value="male" checked>Male
       <label class="form-check-label" for="radio1"></label>
     </div>
 
     <div class="form-check">
-      <input type="radio" class="form-check-input" id="radio2" name="optradio" value="female">Female
+      <input type="radio" class="form-check-input" id="radio2" name="gender" value="female">Female
       <label class="form-check-label" for="radio2"></label>
     </div>
 
