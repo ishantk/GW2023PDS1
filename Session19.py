@@ -6,6 +6,7 @@ from flask import *
 import datetime
 from Session18B import MongoDBHelper
 import hashlib
+from bson.objectid import ObjectId
 
 web_app = Flask("Vets App")
 
@@ -71,6 +72,32 @@ def add_customer():
     return render_template('success.html', message="{} added successfully".format(customer_data['name']))
 
 
+@web_app.route("/update-customer-db", methods=['POST'])
+def update_customer_in_db():
+
+    # if len(session['vet_id']) == 0:
+    #     return redirect("/")
+
+    customer_data_to_update = {
+        'name': request.form['name'],
+        'phone': request.form['phone'],
+        'email': request.form['email'],
+        'age': int(request.form['age']),
+        'gender': request.form['gender'],
+        'address': request.form['address'],
+    }
+
+    if len(customer_data_to_update['name']) == 0 or len(customer_data_to_update['phone']) == 0 or len(customer_data_to_update['email']) == 0:
+        return render_template('error.html', message="Name, Phone and Email cannot be Empty")
+
+    print(customer_data_to_update)
+    db = MongoDBHelper(collection="customer")
+    query = {'_id': ObjectId(request.form['cid'])}
+    db.update(customer_data_to_update, query)
+
+    return render_template('success.html', message="{} updated successfully".format(customer_data_to_update['name']))
+
+
 @web_app.route("/login-vet", methods=['POST'])
 def login_vet():
 
@@ -81,7 +108,7 @@ def login_vet():
 
     print(vet_data)
     db = MongoDBHelper(collection="vets")
-    documents = list(db.fetch(vet_data))
+    documents = db.fetch(vet_data)
     print(documents, type(documents))
     if len(documents) == 1:
         session['vet_id'] = str(documents[0]['_id'])
@@ -100,10 +127,39 @@ def logout():
     return redirect("/")
 
 
+@web_app.route("/fetch-customers")
+def fetch_customers_of_vet():
+    db = MongoDBHelper(collection="customer")
+    # query = {'vet_email': session['vet_email']}
+    query = {'vet_id': session['vet_id']}
+    documents = db.fetch(query)
+    print(documents, type(documents))
+    # return "Customers Fetched for the Vet {}".format(session['vet_name'])
+    return render_template('customers.html', email=session['vet_email'], name=session['vet_name'], documents=documents)
+
+
+@web_app.route("/delete-customer/<id>")
+def delete_customer(id):
+    db = MongoDBHelper(collection="customer")
+    query = {'_id': ObjectId(id)}
+    customer = db.fetch(query)[0]
+    db.delete(query)
+    return render_template('success.html', message="Customer {} Deleted".format(customer['name']))
+
+
+@web_app.route("/update-customer/<id>")
+def update_customer(id):
+    db = MongoDBHelper(collection="customer")
+    query = {'_id': ObjectId(id)}
+    customer = db.fetch(query)[0]
+    return render_template('update-customer.html', email=session['vet_email'],
+                           name=session['vet_name'], customer=customer)
+
+
 def main():
     # In order to use session object in flask, we need to set some key as secret_key in app
     web_app.secret_key = 'vetsapp-key-1'
-    web_app.run()
+    web_app.run(port=5050)
 
 
 if __name__ == "__main__":

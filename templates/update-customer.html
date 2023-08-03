@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>VetsApp - Home</title>
+  <title>VetsApp - Update Customer</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -44,31 +44,30 @@
   <div class="mt-4 p-5 bg-primary text-white rounded">
     <h1>Vets App</h1>
     <p>Dear, {{name}} <br> Welcome to Vets App <br> {{email}}</p>
-
   </div>
 
   <br>
-  <h2>Add Customer</h2>
-  <form action="/add-customer" method="post">
+  <h2>Update Customer</h2>
+  <form action="/update-customer-db" method="post">
 
     <div class="mb-3 mt-3">
       <label for="name">Name:</label>
-      <input type="text" class="form-control" id="name" placeholder="Enter Full Name" name="name">
+      <input type="text" class="form-control" id="name" placeholder="Enter Full Name" name="name" value="{{customer['name']}}">
     </div>
 
     <div class="mb-3 mt-3">
       <label for="phone">Phone:</label>
-      <input type="text" class="form-control" id="phone" placeholder="Enter Phone Number" name="phone">
+      <input type="text" class="form-control" id="phone" placeholder="Enter Phone Number" name="phone" value="{{customer['phone']}}">
     </div>
 
     <div class="mb-3 mt-3">
       <label for="email">Email:</label>
-      <input type="email" class="form-control" id="email" placeholder="Enter Email" name="email">
+      <input type="email" class="form-control" id="email" placeholder="Enter Email" name="email"  value="{{customer['email']}}">
     </div>
 
     <div class="mb-3">
       <label for="age">Age:</label>
-      <input type="number" class="form-control" id="age" placeholder="Enter Age" name="age">
+      <input type="number" class="form-control" id="age" placeholder="Enter Age" name="age" value="{{customer['age']}}">
     </div>
 
     <label >Gender:</label>
@@ -84,10 +83,12 @@
 
     <div class="mb-3 mt-3">
       <label for="address">Address:</label>
-      <input type="text" class="form-control" id="address" placeholder="Enter Address" name="address">
+      <input type="text" class="form-control" id="address" placeholder="Enter Address" name="address" value="{{customer['address']}}">
     </div>
 
-    <button type="submit" class="btn btn-primary">Add Customer</button>
+    <input type="hidden" name="cid", value="{{customer['_id']}}">
+
+    <button type="submit" class="btn btn-primary">Update Customer</button>
   </form>
 </div>
 

@@ -18,9 +18,11 @@ class MongoDBHelper:
         result = self.collection.delete_one(query)
         print("Document Deleted:", result)
 
-    def fetch(self):
-        documents = self.collection.find()
-        # for document in documents:
-        #     print(document)
+    def fetch(self, query=""):
+        documents = self.collection.find(query) # find_one()
+        return list(documents)
 
-        print(tabulate(documents, headers="keys", tablefmt="grid"))
+    def update(self, document, query):
+        update_query = {'$set': document}
+        result = self.collection.update_one(query, update_query)
+        print("Updated Document:", result.modified_count)
