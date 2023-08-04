@@ -138,6 +138,26 @@ def fetch_customers_of_vet():
     return render_template('customers.html', email=session['vet_email'], name=session['vet_name'], documents=documents)
 
 
+@web_app.route("/fetch-pets/<id>")
+def fetch_pets_of_customer(id):
+
+    db = MongoDBHelper(collection="customer")
+    query = {'_id': ObjectId(id)}
+    customer = db.fetch(query)[0]
+
+    db = MongoDBHelper(collection="pet")
+    query = {'vet_id': session['vet_id'], 'customer_id': id}
+    documents = db.fetch(query)
+    print(documents, type(documents))
+    # return "Customers Fetched for the Vet {}".format(session['vet_name'])
+    return render_template('pets.html',
+                           email=session['vet_email'],
+                           name=session['vet_name'],
+                           customer=customer,
+                           documents=documents)
+
+
+
 @web_app.route("/delete-customer/<id>")
 def delete_customer(id):
     db = MongoDBHelper(collection="customer")
@@ -156,10 +176,73 @@ def update_customer(id):
                            name=session['vet_name'], customer=customer)
 
 
+@web_app.route("/search")
+def search():
+    return render_template("search.html", email=session['vet_email'],
+                           name=session['vet_name'])
+
+
+@web_app.route("/add-pet/<id>")
+def add_pet(id):
+    db = MongoDBHelper(collection="customer")
+    # To fetch customer where email and vet id will match
+    query = {'_id': ObjectId(id)}
+    customers = db.fetch(query)
+    customer = customers[0]
+    return render_template("add-pet.html",
+                           vet_id=session['vet_id'],
+                           email=session['vet_email'],
+                           name=session['vet_name'],
+                           customer=customer)
+
+
+@web_app.route("/save-pet", methods=["POST"])
+def save_pet():
+
+    pet_data = {
+        'name': request.form['name'],
+        'breed': request.form['breed'],
+        'age': int(request.form['age']),
+        'gender': request.form['gender'],
+        'customer_id': request.form['customer_id'],
+        'customer_email': request.form['customer_email'],
+        'vet_id': session['vet_id'],
+        'createdOn': datetime.datetime.today()
+    }
+
+    if len(pet_data['name']) == 0 or len(pet_data['breed']) == 0:
+        return render_template('error.html', message="Name and Breed cannot be Empty")
+
+    print(pet_data)
+    db = MongoDBHelper(collection="pet")
+    db.insert(pet_data)
+
+    return render_template('success.html', message="{} added for customer {} successfully.."
+                           .format(pet_data['name'], pet_data['customer_email']))
+
+
+
+# To search Customer
+@web_app.route("/search-customer", methods=["POST"])
+def search_customer():
+    db = MongoDBHelper(collection="customer")
+    # To fetch customer where email and vet id will match
+    query = {'email': request.form['email'], 'vet_id': session['vet_id']}
+    customers = db.fetch(query)
+    if len(customers) == 1:
+        customer = customers[0]
+        return render_template("customer-profile.html", customer=customer,
+                               email=session['vet_email'],
+                               name=session['vet_name']
+                               )
+    else:
+        return render_template("error.html", message="customer not found..")
+
+
 def main():
     # In order to use session object in flask, we need to set some key as secret_key in app
     web_app.secret_key = 'vetsapp-key-1'
-    web_app.run(port=5050)
+    web_app.run(port=5001)
 
 
 if __name__ == "__main__":

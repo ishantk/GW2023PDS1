@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>VetsApp - Home</title>
+  <title>VetsApp - Add Pet</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -29,12 +29,6 @@
           </li>
 
           <li class="nav-item">
-            <a class="nav-link" href="#">Manage Pets</a>
-          </li>
-           <li class="nav-item">
-            <a class="nav-link" href="#">Manage Consultations</a>
-          </li>
-          <li class="nav-item">
             <a class="nav-link" href="/logout">Logout</a>
           </li>
         </ul>
@@ -48,8 +42,9 @@
   </div>
 
   <br>
-  <h2>Add Customer</h2>
-  <form action="/add-customer" method="post">
+  <h2>Add Pet for {{customer['name']}}</h2>
+  <p>Customer Details: {{customer['email']}} | {{customer['phone']}} </p>
+  <form action="/save-pet" method="post">
 
     <div class="mb-3 mt-3">
       <label for="name">Name:</label>
@@ -57,13 +52,8 @@
     </div>
 
     <div class="mb-3 mt-3">
-      <label for="phone">Phone:</label>
-      <input type="text" class="form-control" id="phone" placeholder="Enter Phone Number" name="phone">
-    </div>
-
-    <div class="mb-3 mt-3">
-      <label for="email">Email:</label>
-      <input type="email" class="form-control" id="email" placeholder="Enter Email" name="email">
+      <label for="breed">Breed:</label>
+      <input type="text" class="form-control" id="breed" placeholder="Enter Pet Breed" name="breed">
     </div>
 
     <div class="mb-3">
@@ -82,12 +72,10 @@
       <label class="form-check-label" for="radio2"></label>
     </div>
 
-    <div class="mb-3 mt-3">
-      <label for="address">Address:</label>
-      <input type="text" class="form-control" id="address" placeholder="Enter Address" name="address">
-    </div>
+    <input type="hidden" name="customer_id" value="{{customer['_id']}}">
+    <input type="hidden" name="customer_email" value="{{customer['email']}}">
 
-    <button type="submit" class="btn btn-primary">Add Customer</button>
+    <button type="submit" class="btn btn-primary">Add Pet</button>
   </form>
 </div>
 
