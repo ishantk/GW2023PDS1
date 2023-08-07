@@ -13,6 +13,8 @@ class MongoDBHelper:
     def insert(self, document):
         result = self.collection.insert_one(document)
         print("Document Inserted:", result)
+        # result.inserted_id -> Document Id
+        return result
 
     def delete(self, query):
         result = self.collection.delete_one(query)

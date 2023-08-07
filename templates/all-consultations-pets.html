@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>VetsApp - Pets</title>
+  <title>VetsApp - Pets Consultations</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -38,33 +38,30 @@
     <p>Dear, {{name}} <br> Welcome to Vets App <br> {{email}}</p>
   </div>
 
-    <h2>All Pets</h2>
-    <p>Pets Fetched for {{customer['name']}}</p>
+    <h2>All Consultations</h2>
 
   <table class="table table-striped">
 
     <thead>
       <tr>
-        <th>Name</th>
-        <th>Breed</th>
-        <th>Age</th>
-        <th>Gender</th>
+        <th>Problem</th>
+        <th>Heartrate</th>
+        <th>Temperature</th>
+        <th>Medicines</th>
         <th>CreatedOn</th>
         <th>Actions</th>
-        <th>Consultation</th>
       </tr>
     </thead>
     <tbody>
       {% for doc in documents %}
 
       <tr>
-        <td>{{ doc['name'] }}</td>
-        <td>{{ doc['breed'] }}</td>
-        <td>{{ doc['age'] }}</td>
-        <td>{{ doc['gender'] }}</td>
+        <td>{{ doc['problem'] }}</td>
+        <td>{{ doc['heartrate'] }}</td>
+        <td>{{ doc['temperature'] }}</td>
+        <td>{{ doc['medicines'] }}</td>
         <td>{{ doc['createdOn'] }}</td>
-        <td><a href="/delete-pet/{{doc['_id']}}">Delete</a> | <a href="/update-pet/{{doc['_id']}}">Update</a> </td>
-        <td><a href="/add-consultation/{{doc['_id']}}">Add </a> | <a href="/fetch-consultation-customer-pets/{{doc['_id']}}">View</a> </td>
+        <td><a href="/delete-consultation/{{doc['_id']}}">Delete</a> | <a href="/update-consultation/{{doc['_id']}}">Update</a> </td>
       </tr>
 
      {% endfor %}

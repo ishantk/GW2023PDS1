@@ -39,7 +39,15 @@ def register_vet():
 
     print(vet_data)
     db = MongoDBHelper(collection="vets")
-    db.insert(vet_data)
+
+    # Update MongoDB Helper insert function, to return result here
+    result = db.insert(vet_data)
+
+    # Test the same
+    vet_id = result.inserted_id
+    session['vet_id'] = str(vet_id)
+    session['vet_name'] = vet_data['name']
+    session['vet_email'] = vet_data['email']
 
     return render_template('home.html', email=session['vet_email'])
 
@@ -138,6 +146,19 @@ def fetch_customers_of_vet():
     return render_template('customers.html', email=session['vet_email'], name=session['vet_name'], documents=documents)
 
 
+@web_app.route("/fetch-all-pets")
+def fetch_all_pets():
+    db = MongoDBHelper(collection="pet")
+    query = {'vet_id': session['vet_id']}
+    documents = db.fetch(query)
+    print(documents, type(documents))
+    # return "Customers Fetched for the Vet {}".format(session['vet_name'])
+    return render_template('all-pets.html',
+                           email=session['vet_email'],
+                           name=session['vet_name'],
+                           documents=documents)
+
+
 @web_app.route("/fetch-pets/<id>")
 def fetch_pets_of_customer(id):
 
@@ -156,6 +177,39 @@ def fetch_pets_of_customer(id):
                            customer=customer,
                            documents=documents)
 
+
+@web_app.route("/fetch-all-consultations")
+def fetch_all_consultations():
+
+    db = MongoDBHelper(collection="consultation")
+    query = {'vet_id': session['vet_id']}
+    documents = db.fetch(query)
+    print(documents, type(documents))
+    # return "Customers Fetched for the Vet {}".format(session['vet_name'])
+    return render_template('all-consultations-pets.html',
+                           email=session['vet_email'],
+                           name=session['vet_name'],
+                           documents=documents)
+
+
+@web_app.route("/fetch-consultation-customer-pets/<id>")
+def fetch_consultations_of_customer_pets(id):
+
+    db = MongoDBHelper(collection="pet")
+    query = {'_id': ObjectId(id)}
+    pet = db.fetch(query)[0]
+
+    db = MongoDBHelper(collection="consultation")
+    query = {'vet_id': session['vet_id'], 'customer_id': pet['customer_id'], 'pet_id': str(pet['_id'])}
+    print("[DEBUG] QUERY:", query)
+    documents = db.fetch(query)
+    print(documents, type(documents))
+    # return "Customers Fetched for the Vet {}".format(session['vet_name'])
+    return render_template('consultations-pets.html',
+                           email=session['vet_email'],
+                           name=session['vet_name'],
+                           pet=pet,
+                           documents=documents)
 
 
 @web_app.route("/delete-customer/<id>")
@@ -220,6 +274,45 @@ def save_pet():
     return render_template('success.html', message="{} added for customer {} successfully.."
                            .format(pet_data['name'], pet_data['customer_email']))
 
+
+@web_app.route("/add-consultation/<id>")
+def add_consultation(id):
+    db = MongoDBHelper(collection="pet")
+    query = {'_id': ObjectId(id)}
+    pets = db.fetch(query)
+    pet = pets[0]
+    return render_template("add-consultation.html",
+                           vet_id=session['vet_id'],
+                           email=session['vet_email'],
+                           name=session['vet_name'],
+                           pet=pet)
+
+
+@web_app.route("/save-consultation", methods=["POST"])
+def save_consultation():
+
+    consultation_data = {
+        'problem': request.form['problem'],
+        'heartrate': int(request.form['heartrate']),
+        'temperature': float(request.form['temperature']),
+        'medicines': request.form['medicines'],
+        'pet_name': request.form['pet_name'],
+        'pet_id': request.form['pet_id'],
+        'customer_id': request.form['customer_id'],
+        'vet_id': session['vet_id'],
+        'createdOn': datetime.datetime.today()
+    }
+
+    # Form Validation
+    if len(consultation_data['problem']) == 0 or len(consultation_data['medicines']) == 0:
+        return render_template('error.html', message="Problem and Medicines, cannot be empty")
+
+    print(consultation_data)
+    db = MongoDBHelper(collection="consultation")
+    db.insert(consultation_data)
+
+    return render_template('success.html', message="Consultation for Pet {} added successfully.."
+                           .format(consultation_data['pet_name']))
 
 
 # To search Customer
